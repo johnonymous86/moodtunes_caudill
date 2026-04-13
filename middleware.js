@@ -1,20 +1,11 @@
-import { NextResponse } from 'next/server'
-import { getIronSession } from "iron-session/edge";
-import sessionOptions from './config/session'
+import { withAuth } from 'next-auth/middleware';
 
-export async function middleware(req) {
-  const res = NextResponse.next();
-  const session = await getIronSession(req, res, sessionOptions);
-
-  const { user } = session;
-
-  if (!user) {
-    return NextResponse.redirect(new URL('/login', req.url))
-  }
-
-  return res;
-}
+export default withAuth({
+  pages: {
+    signIn: '/login',
+  },
+});
 
 export const config = {
-  matcher: ["/dashboard"]
-}
+  matcher: ['/dashboard/:path*', '/history/:path*'],
+};
